@@ -838,6 +838,169 @@ code {
   animation: fadeInUp 0.6s ease-out;
 }
 
+/* ── Design Polish ─────────────────────────────────────────── */
+
+/* Hero: blurred collage background */
+.hero-with-bg {
+  position: relative;
+  overflow: hidden;
+  background: #f8fafc;
+}
+
+.hero-bg-collage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: stretch;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-bg-collage img,
+.hero-bg-collage canvas {
+  flex: 1;
+  min-width: 0;
+  width: 0;
+  object-fit: cover;
+  height: 100%;
+  filter: blur(12px) brightness(0.45) saturate(0.6);
+  transform: scale(1.08);
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transition: none !important;
+}
+
+/* 1 → ∞ large gradient display */
+.hero-infinity-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.4rem;
+}
+
+.hero-infinity-display .inf-num,
+.hero-infinity-display .inf-symbol {
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 8px rgba(96,165,250,0.4));
+}
+
+.hero-infinity-display .inf-arrow {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 300;
+  color: rgba(255,255,255,0.6);
+  line-height: 1;
+  margin: 0 0.2rem;
+}
+
+/* When hero has bg, make text white */
+.hero-with-bg .publication-title {
+  color: #fff !important;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.35);
+}
+
+.hero-with-bg .publication-authors {
+  color: rgba(255,255,255,0.9) !important;
+}
+
+.hero-with-bg .publication-authors a {
+  color: #93c5fd !important;
+}
+
+.hero-with-bg .is-size-5 {
+  color: rgba(255,255,255,0.85) !important;
+}
+
+/* Publication title: tighter tracking, larger weight */
+.publication-title {
+  letter-spacing: -0.03em !important;
+  font-size: clamp(2rem, 5vw, 3.2rem) !important;
+}
+
+/* Conference badge pill */
+.publication-authors .author-block:last-child {
+  display: inline-block;
+}
+
+/* CVPR badge */
+.cvpr-badge {
+  display: inline-block;
+  background: #1e293b;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+/* Section divider accent line */
+.section {
+  border-top: 1px solid var(--border-color);
+}
+.section:first-of-type {
+  border-top: none;
+}
+
+/* Key contribution boxes: left accent border */
+.box {
+  border-left: 4px solid var(--primary-color) !important;
+  border-radius: var(--border-radius) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: var(--transition) !important;
+}
+.box:hover {
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-2px);
+}
+
+/* Abstract section: slightly larger, more readable */
+.section.hero.is-light .content.has-text-justified p {
+  font-size: 1.08rem;
+  line-height: 1.85;
+  color: #334155;
+}
+
+/* Table: highlight UMF row more clearly */
+.table tbody tr[style*="background-color"] td {
+  border-top: 2px solid var(--primary-color) !important;
+  border-bottom: 2px solid var(--primary-color) !important;
+}
+.table tbody tr[style*="background-color"] td:first-child {
+  border-left: 4px solid var(--primary-color) !important;
+}
+
+/* Tab switcher polish */
+.tabs.is-boxed li.is-active a {
+  background: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+.tabs.is-boxed a {
+  font-weight: 500;
+  transition: var(--transition);
+}
+.tabs.is-boxed a:hover {
+  background: var(--background-accent) !important;
+}
+
+/* Figure captions */
+.has-text-centered p[style*="text-secondary"] {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  max-width: 720px;
+  margin: 0.75rem auto 0;
+}
+
 /* Improved focus states for accessibility */
 .button:focus,
 .related-works-btn:focus,

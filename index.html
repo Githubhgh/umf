@@ -132,11 +132,25 @@
   <main id="main-content">
 
   <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-body">
+  <section class="hero hero-with-bg">
+    <!-- Blurred background collage: first frames of 1→5 agent GIFs via canvas -->
+    <div class="hero-bg-collage" aria-hidden="true">
+      <canvas id="bgCanvas1"></canvas>
+      <canvas id="bgCanvas2"></canvas>
+      <canvas id="bgCanvas3"></canvas>
+      <canvas id="bgCanvas4"></canvas>
+      <canvas id="bgCanvas5"></canvas>
+    </div>
+    <div class="hero-body" style="position:relative;z-index:2;">
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
+            <!-- 1 → ∞ display -->
+            <div class="hero-infinity-display">
+              <span class="inf-num">1</span>
+              <span class="inf-arrow">→</span>
+              <span class="inf-symbol">∞</span>
+            </div>
             <h1 class="title is-1 publication-title">Unified Number-Free Text-to-Motion Generation Via Flow Matching</h1>
             <div class="is-size-5 publication-authors">
               <span class="author-block">
@@ -149,6 +163,9 @@
 
             <div class="is-size-5 publication-authors">
               <span class="author-block">King's College London<br>CVPR 2026</span>
+            </div>
+            <div style="margin-top:1rem;">
+              <img src="https://upload.wikimedia.org/wikipedia/en/4/4e/King%27s_College_London_logo.svg" alt="King's College London" style="height:48px; object-fit:contain;" onerror="this.style.display='none'" />
             </div>
 
             <div class="column has-text-centered">
@@ -253,23 +270,11 @@
       <div class="column">
         <h2 class="title is-3">Method Overview</h2>
         <div class="content has-text-justified">
-          <p>
-            The UMF framework consists of three stages:
-          </p>
-          <p>
-            <strong>(A) Unified Motion VAE:</strong> A motion VAE with latent adapters encodes raw motions from heterogeneous datasets (e.g., HumanML3D, InterHuman) into a regularized multi-token latent representation. The multi-token latent space shows superior reconstruction performance compared to single-token methods, mitigating heterogeneous domain gaps.
-          </p>
-          <p>
-            <strong>(B) P-Flow Motion Prior Generation:</strong> The Pyramid Flow Transformer synthesizes the latent motion prior based on noisy latent motion and text conditions. P-Flow operates hierarchically based on the timestep: it processes downsampled, low-resolution latents for early timesteps and switches to original-resolution latents for later timesteps, mitigating multi-token computational overheads. This pyramidal structure concentrates computation at lower resolutions, reducing cost by a factor of ≈1/K.
-          </p>
-          <p>
-            <strong>(C) S-Flow Reaction Generation:</strong> Based on previously generated latents, the context adapter generates the context motion. Then the Semi-Noise Flow transformer predicts the reaction latent by jointly modeling context reconstruction and reaction transformation, alleviating error accumulation from previously generated motion. For N &gt; 2 people, S-Flow is applied autoregressively, using synthesized motions of preceding agents as input to generate the next agent's motion.
-          </p>
           <!-- Figure 2 architecture diagram -->
-          <div class="has-text-centered" style="margin-top: 2rem;">
-            <img src="static/images/UMF2.png" alt="Overview of the Unified Motion Flow (UMF) architecture. (A) Unified motion VAE encodes raw motions into a regularized multi-token latent representation. (B) P-Flow motion prior generation synthesizes the latent motion prior hierarchically. (C) S-Flow reaction generation predicts the reaction latent by jointly modeling context reconstruction and reaction transformation." style="width: 100%; border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg);" loading="lazy"/>
+          <div class="has-text-centered">
+            <img src="static/images/UMF2.png" alt="Overview of the UMF architecture" style="width: 100%; border-radius: var(--border-radius-lg); box-shadow: var(--shadow-lg);" loading="lazy"/>
             <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 0.95rem;">
-              <strong>Figure 2.</strong> Overview of the UMF architecture. (A) Unified motion VAE encodes raw motions into a regularized multi-token latent representation. (B) P-Flow synthesizes the latent motion prior hierarchically based on the timestep. (C) S-Flow predicts the reaction latent by jointly modeling context reconstruction and reaction transformation.
+              <strong>Figure 2.</strong> Overview of the UMF architecture. <strong>(A) Unified Motion VAE:</strong> Encodes heterogeneous motions (HumanML3D, InterHuman) into a regularized multi-token latent space, bridging domain gaps between datasets. <strong>(B) P-Flow:</strong> Synthesizes the individual motion prior hierarchically — processing low-resolution latents at early timesteps and full-resolution at later timesteps, reducing computation by ≈1/K. <strong>(C) S-Flow:</strong> Generates reactions by jointly learning context reconstruction and reaction transformation paths, alleviating error accumulation. Applied autoregressively for N &gt; 2 agents.
             </p>
           </div>
         </div>
@@ -284,125 +289,82 @@
 <section class="section">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Quantitative Results</h2>
-    
-    <div class="content">
-      <h4 class="title is-5">InterHuman Benchmark</h4>
-      <p>UMF substantially outperforms the generalist baseline FreeMotion, improving Top3 R-Precision by 28% and reducing FID by 29%. Against specialist methods tailored for dual-agent scenarios, UMF achieves the best FID score.</p>
-      
-      <div class="table-container">
-        <table class="table is-bordered is-striped is-hoverable is-fullwidth">
-          <thead>
-            <tr>
-              <th>Method</th>
-              <th>R Top 3 ↑</th>
-              <th>FID ↓</th>
-              <th>MM Dist ↓</th>
-              <th>Diversity →</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Ground Truth</td>
-              <td>0.701</td>
-              <td>0.273</td>
-              <td>3.755</td>
-              <td>7.948</td>
-            </tr>
-            <tr>
-              <td>InterGen</td>
-              <td>0.624</td>
-              <td>5.918</td>
-              <td>5.108</td>
-              <td>7.387</td>
-            </tr>
-            <tr>
-              <td>TIMotion</td>
-              <td>0.724</td>
-              <td>5.433</td>
-              <td>3.775</td>
-              <td>8.032</td>
-            </tr>
-            <tr>
-              <td>InterMask</td>
-              <td>0.683</td>
-              <td>5.154</td>
-              <td>3.790</td>
-              <td>7.944</td>
-            </tr>
-            <tr>
-              <td>FreeMotion</td>
-              <td>0.544</td>
-              <td>6.740</td>
-              <td>3.848</td>
-              <td>7.828</td>
-            </tr>
-            <tr style="font-weight: 700; background-color: #eff6ff;">
-              <td>UMF (Ours)</td>
-              <td>0.694</td>
-              <td><strong>4.772</strong></td>
-              <td><strong>3.784</strong></td>
-              <td>8.039</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
 
-      <h4 class="title is-5" style="margin-top: 2rem;">InterHuman-AS Benchmark (Action-Reaction Synthesis)</h4>
-      <p>UMF improves Top3 R-Precision by over 30% and reduces MM-Distance by 27% compared to ReGenNet, significantly improving reactive motion quality.</p>
-      
+    <!-- Tab buttons -->
+    <div class="tabs is-centered is-boxed" style="margin-bottom:1.5rem;">
+      <ul id="quant-tabs">
+        <li class="is-active" data-tab="tab-ih"><a>InterHuman</a></li>
+        <li data-tab="tab-as"><a>InterHuman-AS</a></li>
+        <li data-tab="tab-hml"><a>HumanML3D</a></li>
+      </ul>
+    </div>
+
+    <!-- InterHuman -->
+    <div id="tab-ih" class="quant-tab-content">
+      <p class="mb-4">UMF substantially outperforms the generalist baseline FreeMotion, improving Top3 R-Precision by 28% and reducing FID by 29%. Against specialist methods, UMF achieves the best FID score.</p>
       <div class="table-container">
         <table class="table is-bordered is-striped is-hoverable is-fullwidth">
-          <thead>
-            <tr>
-              <th>Method</th>
-              <th>R Top 3 ↑</th>
-              <th>FID ↓</th>
-              <th>MM Dist ↓</th>
-              <th>Diversity →</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Method</th><th>R Top-3 ↑</th><th>FID ↓</th><th>MM Dist ↓</th><th>Diversity →</th></tr></thead>
           <tbody>
-            <tr>
-              <td>Real</td>
-              <td>0.722</td>
-              <td>0.002</td>
-              <td>3.503</td>
-              <td>5.390</td>
-            </tr>
-            <tr>
-              <td>ReGenNet</td>
-              <td>0.407</td>
-              <td>2.265</td>
-              <td>6.860</td>
-              <td>5.214</td>
-            </tr>
-            <tr>
-              <td>FreeMotion</td>
-              <td>0.409</td>
-              <td>3.896</td>
-              <td>7.632</td>
-              <td>6.089</td>
-            </tr>
-            <tr style="font-weight: 700; background-color: #eff6ff;">
-              <td>UMF (Ours)</td>
-              <td><strong>0.530</strong></td>
-              <td>2.577</td>
-              <td><strong>4.987</strong></td>
-              <td>7.764</td>
-            </tr>
+            <tr><td>Ground Truth</td><td>0.701</td><td>0.273</td><td>3.755</td><td>7.948</td></tr>
+            <tr><td>InterGen</td><td>0.624</td><td>5.918</td><td>5.108</td><td>7.387</td></tr>
+            <tr><td>TIMotion</td><td>0.724</td><td>5.433</td><td>3.775</td><td>8.032</td></tr>
+            <tr><td>InterMask</td><td>0.683</td><td>5.154</td><td>3.790</td><td>7.944</td></tr>
+            <tr><td>FreeMotion</td><td>0.544</td><td>6.740</td><td>3.848</td><td>7.828</td></tr>
+            <tr style="font-weight:700;background-color:#eff6ff;"><td>UMF (Ours)</td><td>0.694</td><td><strong>4.772</strong></td><td><strong>3.784</strong></td><td>8.039</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- Efficiency Analysis -->
-    <div class="content" style="margin-top: 2rem;">
-      <h4 class="title is-5">Efficiency Analysis</h4>
-      <p>Compared to FreeMotion under the same inference steps (60 steps), UMF achieves lower FLOPs and is nearly <strong>5× faster</strong> (0.623s vs 3.059s average inference time), demonstrating the efficiency of P-Flow for complex interaction generation.</p>
+    <!-- InterHuman-AS -->
+    <div id="tab-as" class="quant-tab-content" style="display:none;">
+      <p class="mb-4">UMF improves Top3 R-Precision by over 30% and reduces MM-Distance by 27% compared to ReGenNet, significantly improving reactive motion quality.</p>
+      <div class="table-container">
+        <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+          <thead><tr><th>Method</th><th>R Top-3 ↑</th><th>FID ↓</th><th>MM Dist ↓</th><th>Diversity →</th></tr></thead>
+          <tbody>
+            <tr><td>Real</td><td>0.722</td><td>0.002</td><td>3.503</td><td>5.390</td></tr>
+            <tr><td>ReGenNet</td><td>0.407</td><td>2.265</td><td>6.860</td><td>5.214</td></tr>
+            <tr><td>FreeMotion</td><td>0.409</td><td>3.896</td><td>7.632</td><td>6.089</td></tr>
+            <tr style="font-weight:700;background-color:#eff6ff;"><td>UMF (Ours)</td><td><strong>0.530</strong></td><td>2.577</td><td><strong>4.987</strong></td><td>7.764</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+
+    <!-- HumanML3D -->
+    <div id="tab-hml" class="quant-tab-content" style="display:none;">
+      <p class="mb-4">UMF's unified latent space achieves strong single-person generation on HumanML3D, outperforming FreeMotion on both FID and R Top-3.</p>
+      <div class="table-container">
+        <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+          <thead><tr><th>Method</th><th>R Top-3 ↑</th><th>FID ↓</th></tr></thead>
+          <tbody>
+            <tr><td>Real</td><td>0.797</td><td>0.002</td></tr>
+            <tr><td>FreeMotion</td><td>0.612</td><td>3.539</td></tr>
+            <tr style="font-weight:700;background-color:#eff6ff;"><td>UMF (Ours)</td><td><strong>0.729</strong></td><td><strong>0.486</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 </section>
 <!-- End Quantitative Results -->
+
+<script>
+(function() {
+  const tabs = document.querySelectorAll('#quant-tabs li');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('is-active'));
+      document.querySelectorAll('.quant-tab-content').forEach(c => c.style.display = 'none');
+      tab.classList.add('is-active');
+      document.getElementById(tab.dataset.tab).style.display = '';
+    });
+  });
+})();
+</script>
 
 
 <!-- Qualitative Results - Dual-Agent and Zero-Shot Multi-Agent -->
@@ -557,6 +519,18 @@
             This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
             This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
           </p>
+          <p id="busuanzi_stats" style="font-size: 0.85rem; color: #888; margin-top: 0.5rem; display: none;">
+            <span id="busuanzi_container_site_pv">Total visits: <span id="busuanzi_value_site_pv"></span> &nbsp;|&nbsp; </span>
+            <span id="busuanzi_container_site_uv">Unique visitors: <span id="busuanzi_value_site_uv"></span></span>
+          </p>
+          <script>
+            (function() {
+              var host = window.location.hostname;
+              if (host !== 'localhost' && host !== '127.0.0.1' && host !== '') {
+                document.getElementById('busuanzi_stats').style.display = 'block';
+              }
+            })();
+          </script>
         </div>
       </div>
     </div>
@@ -564,5 +538,34 @@
 </footer>
 
   </main>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script>
+// Capture first frame of each GIF onto canvas for static background
+(function() {
+  const pairs = [
+    ['bgCanvas1', 'static/images/pptx_extracted/image1.gif'],   // 1 agent
+    ['bgCanvas2', 'static/images/pptx_extracted/image2.gif'],   // 2 agents
+    ['bgCanvas3', 'static/images/pptx_extracted/image10.gif'],  // 3 agents
+    ['bgCanvas4', 'static/images/pptx_extracted/image16.gif'],  // 4 agents
+    ['bgCanvas5', 'static/images/pptx_extracted/image19.gif'],  // 5 agents
+  ];
+  pairs.forEach(([id, src]) => {
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function() {
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+    };
+    img.src = src;
+  });
+})();
+</script>
+
   </body>
   </html>

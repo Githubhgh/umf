@@ -181,7 +181,7 @@ $(document).ready(function() {
     // Check for click events on the navbar burger icon
 
     // Initialize custom carousels
-    initCarousel('dual', 3);      // Dual-Agent has 3 slides
+    initCarousel('dual', 6);      // Dual-Agent has 6 slides
     initCarousel('multiagent', 6); // Multi-Agent has 6 slides
 	
     bulmaSlider.attach();
